@@ -9,7 +9,7 @@
   * Updating an account
   * Removing an account/database
   * Read the contents of an account
-  * Print the entire accounts' statements into a text file
+  * Print the entire accounts' statements into a csv file
 
 ### TODO:
 * Create a UML diagram for the application

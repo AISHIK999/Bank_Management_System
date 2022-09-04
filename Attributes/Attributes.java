@@ -55,10 +55,6 @@ public class Attributes {
 	// toString
 	@Override
 	public String toString() {
-		return "Account Number: " + accountNumber +
-				"\nAccount Name: " + accountName +
-				"\nAadhaar Number: " + aadhaarNumber +
-				"\nMobile Number: " + mobileNumber +
-				"\nAccount Balance: " + accountBalance;
+		return accountNumber + "," + accountName + "," + aadhaarNumber + "," + mobileNumber + "," + accountBalance;
 	}
 }

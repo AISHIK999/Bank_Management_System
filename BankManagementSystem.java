@@ -14,6 +14,8 @@ import java.io.FileNotFoundException;
 
 public class BankManagementSystem {
     private static Scanner sc = new Scanner(System.in);
+    /*We will use hashmap to use the concept of primary key of a database system for our basic program
+    * We are going to use account number as our primary key*/
     private static HashMap<Integer, Attributes> accountList = new HashMap<Integer, Attributes>();
 
     public static void main(String[] args) {
@@ -22,28 +24,31 @@ public class BankManagementSystem {
             banner();
             System.out.println("WELCOME TO THE BANK MANAGEMENT SYSTEM");
             banner();
-            System.out.println("Add account [1]");
-            System.out.println("Read account [2]");
-            System.out.println("Update account [3]");
-            System.out.println("Delete account [4]");
-            System.out.println("Print database [5]");
-            System.out.println("Exit [6]");
+            System.out.println("Add account [1]");          // Add a new account
+            System.out.println("Read account [2]");         // Read an existing account
+            System.out.println("Update account [3]");       // Update an existing account
+            System.out.println("Delete account [4]");       // Delete an existing account
+            System.out.println("Print database [5]");       // Print the banking database
+            System.out.println("Exit [6]");                 // Exit the program
             System.out.println();
             System.out.println("Enter your choice: ");
             choice = sc.nextInt();
-
-            runAction(choice);
+            startApp(choice);
         }
     }
 
-    // Break line
+    // Our banner design
     public static void banner() {
-        System.out.println("==================================================");
+        System.out.println();
+        for(int i = 0; i <= 50; i++) {
+            System.out.print("=");
+        }
         System.out.println();
     }
 
-    // Run action
-    public static void runAction(int choice) {
+    // Start the application
+    // This method will call the respective methods according to the user's choice
+    public static void startApp(int choice) {
         switch (choice) {
             case 1:
                 AppendAccount();
@@ -134,11 +139,11 @@ public class BankManagementSystem {
             System.out.println("VIEW ACCOUNT");
             banner();
 
-            System.out.println("View entire database [A]");
-            System.out.println("View a specific account [B]");
+            System.out.println("View entire database [A]");         // View entire banking database
+            System.out.println("View a specific account [B]");      // View a specific account's database
             System.out.println("Enter your choice: ");
             choice = sc.next().charAt(0);
-            choice = Character.toUpperCase(choice);
+            choice = Character.toUpperCase(choice);                 // a or A. All are accepted
 
             switch (choice) {
                 case 'A':
@@ -149,19 +154,21 @@ public class BankManagementSystem {
                     }
                     break;
                 case 'B':
+                    // Since account numbers are unique, we can use it as a primary key and call each instance by their account number
                     System.out.print("Enter the account number of the account you want to view: ");
-                    int id = sc.nextInt();
+                    int primaryKey = sc.nextInt();
                     boolean present = false;
                     for (Integer key : accountList.keySet()) {
-                        if (id == key) {
+                        if (primaryKey == key) {
                             banner();
-                            System.out.println(accountList.get(id));
+                            System.out.println(accountList.get(primaryKey));
                             present = true;
                             break;
                         } else {
                             present = false;
                         }
                     }
+                    // Return error if the account number is not found within the database
                     if (present == false) {
                         banner();
                         System.out.println("Account not found. Please check the account number.");
@@ -185,8 +192,8 @@ public class BankManagementSystem {
             System.out.println("REMOVE ACCOUNT");
             banner();
 
-            System.out.println("Remove entire database [A]: ");
-            System.out.println("Remove a specific account [B]: ");
+            System.out.println("Remove entire database [A]: ");         // Nuke everything from the DB
+            System.out.println("Remove a specific account [B]: ");      // Nuke a specific account
             System.out.println("Enter your choice: ");
             choice = sc.next().charAt(0);
             choice = Character.toUpperCase(choice);
@@ -201,13 +208,13 @@ public class BankManagementSystem {
                     boolean isAccount = false;
 
                     System.out.print("Enter remove account id: ");
-                    int id = sc.nextInt();
+                    int primaryKey = sc.nextInt();
 
                     for (Integer key : accountList.keySet()) {
-                        if (key == id) {
-                            accountList.remove(id);
+                        if (key == primaryKey) {
+                            accountList.remove(primaryKey);
                             banner();
-                            System.out.println("Database for account number " + id + " has been removed.");
+                            System.out.println("Database for account number " + primaryKey + " has been removed.");
                             isAccount = true;
                             break;
                         } else {
@@ -216,7 +223,7 @@ public class BankManagementSystem {
                     }
                     if (isAccount == false) {
                         banner();
-                        System.out.println("Account number " + id + " not found. Please check the account number.");
+                        System.out.println("Account number " + primaryKey + " not found. Please check the account number.");
                     }
                     break;
                 default:
@@ -227,27 +234,27 @@ public class BankManagementSystem {
 
     // Update an account
     public static void UpdateAccount() {
+        Scanner sc = new Scanner(System.in);
         char choice = '\0';
-        int id = 0;
-        String name = "";
-        String aadhaar = "";
-        String mobile = "";
-        String balance = "";
+        int primaryKey = 0;
+        String name = " ";
+        String aadhaar = " ";
+        String mobile = " ";
+        String balance = " ";
         boolean isAcc = false;
 
         // Return null for empty database
         if (accountList.size() == 0) {
             System.out.println("No account!");
-
-        } else if (accountList.size() != 0) {
+        } else {
             banner();
             System.out.println("UPDATE ACCOUNT");
             banner();
             System.out.print("Enter the account number of the bank account to update: ");
-            id = sc.nextInt();
+            primaryKey = Integer.parseInt(sc.nextLine());
         }
         for (Integer key : accountList.keySet()) {
-            if (id == key) {
+            if (primaryKey == key) {
                 System.out.println("Update name [A]: ");
                 System.out.println("Update Aadhaar number [B]: ");
                 System.out.println("Update mobile number [C]: ");
@@ -255,73 +262,88 @@ public class BankManagementSystem {
                 System.out.println("Enter your choice:");
                 choice = sc.next().charAt(0);
                 choice = Character.toUpperCase(choice);
+                sc.nextLine();      // Clear buffer. Credits to [https://www.geeksforgeeks.org/why-is-scanner-skipping-nextline-after-use-of-other-next-functions/]
 
+                // Since all of the attributes are strings, we can use the same code for all of them
                 switch (choice) {
                     case 'A':
-                        System.out.print("Enter new name of the account holder: ");
+                        System.out.println("Enter the name of the account holder: ");
                         name = sc.nextLine();
-                        accountList.get(id).setAccountName(name);
+                        accountList.get(primaryKey).setAccountName(name);
                         banner();
                         System.out.println("Successfully updated.");
                         break;
                     case 'B':
                         System.out.print("Enter new Aadhaar number of the account holder: ");
                         aadhaar = sc.nextLine();
-                        accountList.get(id).setAadhaarNumber(aadhaar);
+                        accountList.get(primaryKey).setAadhaarNumber(aadhaar);
                         banner();
                         System.out.println("Successfully updated.");
                         break;
                     case 'C':
                         System.out.print("Enter new mobile number of the account holder: ");
                         mobile = sc.nextLine();
-                        accountList.get(id).setMobileNumber(mobile);
+                        accountList.get(primaryKey).setMobileNumber(mobile);
                         banner();
                         System.out.println("Successfully updated.");
                         break;
                     case 'D':
-                        System.out.println("Enter new account balance: ");
+                        System.out.print("Enter new account balance: ");
                         balance = sc.nextLine();
-                        accountList.get(id).setAccountBalance(balance);
+                        accountList.get(primaryKey).setAccountBalance(balance);
                         banner();
-
                     default:
                         System.out.println("Please select a valid choice");
                         break;
                 }
-            } else {
+            }
+            else {
                 banner();
                 System.out.println("Wrong ID Number! Try another one!");
             }
         }
     }
-    
+
+    // Print out account database in a text file
     public static void PrintDB() {
         if (accountList.size() == 0) {
             System.out.println("Database is empty. Please add an account.");
         } else {
             try {
-                FileWriter fw = new FileWriter("database.txt");
+                // Credit to [https://www.geeksforgeeks.org/reading-writing-text-files-java/]
+                FileWriter fw = new FileWriter("database.csv");
                 Date date = new Date();
+                // Credit to [https://www.geeksforgeeks.org/java-date-tostring-method/]
+                // Credit to [https://www.w3schools.com/java/java_date.asp]
                 SimpleDateFormat currentDate = new SimpleDateFormat("dd(E)/MM(MMM)/yyyy");
                 SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm:ss a");
 
-                fw.write("******************************\n");
-                fw.write("*    DATABASE INFORMATION    *\n");
-                fw.write("******************************");
-                fw.write("\n\n");
-                fw.write("AS OF DATE: " + currentDate.format(date) + "\n");
-                fw.write("AS OF TIME: " + currentTime.format(date) + "\n");
-                fw.write("\n\n");
+                /*
+                * The variables were written in a hurry :P
+                * They were created in the first place as file write does not accept String imput directly
+                * So I had to format to Str
+                * Credits [https://stackoverflow.com/questions/19509271/no-suitable-method-found-for-writestring]
+                * */
+                String a = "DATE";
+                String b = "TIME";
+                String c = "INDEX";
+                String d = "ACCOUNT NUMBER";
+                String e = "NAME";
+                String f = "AADHAAR NUMBER";
+                String g = "MOBILE NUMBER";
+                String h = "ACCOUNT BALANCE";
+                // All the values written will be separated by a comma from here on
+                // The output file has been changed from .txt to .csv for better readability
+                fw.write(String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", a, b, c, d, e, f, g, h));
 
-                int no = 1;
+                int ind = 1;
                 for (Attributes attributes : accountList.values()) {
-                    fw.write("INDEX: " + no + "\n" + attributes + "\n\n");
-                    no++;
-                    System.out.println();
+                    fw.write(currentDate.format(date) +"," + currentTime.format(date) +"," + ind + "," + attributes + "\n");
+                    ind++;
                 }
                 fw.close();
 
-                System.out.println("Check database.txt for more information");
+                System.out.println("Check database.csv for more information");
                 banner();
             }
             // Error handling
@@ -329,7 +351,7 @@ public class BankManagementSystem {
                 System.out.println(e);
             }
             try {
-                File file = new File("database.txt");
+                File file = new File("database.csv");
 
                 Scanner sc = new Scanner(file);
                 System.out.println(sc.nextLine());
